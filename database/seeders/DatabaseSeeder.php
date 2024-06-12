@@ -2,22 +2,26 @@
 
 namespace Database\Seeders;
 
+use App\Models\Customer;
+use App\Models\Todo;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $customer = Customer::factory()->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
+        $user = User::factory()->for($customer)->create([
             'email' => 'test@example.com',
+            'password' => bcrypt('test@example.com'),
         ]);
+
+        Todo::factory()
+            ->for($customer)
+            ->for($user)
+            ->count(5)
+            ->create();
     }
 }
