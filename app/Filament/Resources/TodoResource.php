@@ -28,6 +28,23 @@ class TodoResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('title')
                     ->required(),
+                Forms\Components\Radio::make('is_long_term')
+                    ->boolean()
+                    ->default(true)
+                    ->reactive()
+                    ->required(),
+                Forms\Components\DatePicker::make('due_date')
+                    ->native(false)
+                    ->default(fn () => now()->startOfMonth())
+                    ->displayFormat(fn ($get) => $get('is_long_term') ? 'M Y' : 'Y-d-m')
+                    ->closeOnDateSelection()
+                    ->required(),
+                Forms\Components\DatePicker::make('grace_period_extends_till')
+                    ->native(false)
+                    ->default(fn () => now()->startOfMonth())
+                    ->displayFormat(fn ($get) => $get('is_long_term') ? 'M Y' : 'Y-d-m')
+                    ->closeOnDateSelection()
+                    ->required(),
             ]);
     }
 
