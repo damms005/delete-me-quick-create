@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements FilamentUser, HasTenants
 {
@@ -53,8 +54,9 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->belongsTo(Customer::class);
     }
 
-    public function todos(): HasMany
+    public function todos(): BelongsToMany
     {
-        return $this->hasMany(Todo::class);
+        return $this->belongsToMany(Todo::class)
+            ->withPivot('due_date');
     }
 }

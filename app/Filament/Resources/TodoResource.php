@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TodoResource\Pages;
-use App\Filament\Resources\TodoResource\RelationManagers;
 use App\Models\Todo;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TodoResource extends Resource
 {
@@ -43,6 +40,15 @@ class TodoResource extends Resource
                     ->native(false)
                     ->default(fn () => now()->startOfMonth())
                     ->displayFormat(fn ($get) => $get('is_long_term') ? 'M Y' : 'Y-d-m')
+                    ->closeOnDateSelection()
+                    ->required(),
+                Forms\Components\Select::make('completed_by')
+                    ->relationship('user', 'name')
+                    ->nullable(),
+                Forms\Components\DatePicker::make('completed_at')
+                    ->native(false)
+                    ->default(fn () => now()->startOfMonth())
+                    ->displayFormat('Y-m-d H:i:s')
                     ->closeOnDateSelection()
                     ->required(),
             ]);
@@ -81,15 +87,14 @@ class TodoResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListTodos::route('/'),
+            'edit' => Pages\EditTodo::route('/{record}/edit'),
         ];
     }
 }
